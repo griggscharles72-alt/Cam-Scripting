@@ -1,0 +1,127 @@
+import cv2
+import time
+import os
+from datetime import datetime
+
+# =========================
+# CONFIG
+# =========================
+
+CAMERA_URLS = [
+    "http://camera1_stream_url",
+    "http://camera2_stream_url",
+    "http://camera3_stream_url"
+]
+
+SAVE_DIR = "captures"
+RECONNECT_DELAY = 5  # seconds
+FRAME_TIMEOUT = 10   # seconds without frames before reconnect
+
+os.makedirs(SAVE_DIR, exist_ok=True)
+
+
+# =========================
+# CAMERA CONNECTION
+# =========================
+
+def connect_camera(url):
+    cap = cv2.VideoCapture(url)
+    if not cap.isOpened():
+        print(f"[WARN] Could not connect: {url}")
+        return None
+    print(f"[INFO] Connected: {url}")
+    return cap
+
+
+# =========================
+# VEHICLE DETECTION (stub)
+# =========================
+
+def detect_vehicle(frame):
+    """
+    Replace this with real detection later.
+    For now it just returns False safely.
+    """
+    return False
+
+
+# =========================
+# SNAPSHOT SAVE
+# =========================
+
+def save_snapshot(frame, cam_index):
+    timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
+    filename = os.path.join(
+        SAVE_DIR,
+        f"cam{cam_index}_{timestamp}.jpg"
+    )
+    cv2.imwrite(filename, frame)
+    print(f"[SAVE] {filename}")
+
+
+# =========================
+# MAIN MONITOR LOOP
+# =========================
+
+def monitor():
+    cameras = [connect_camera(url) for url in CAMERA_URLS]
+    last_frame_time = [time.time()] * len(CAMERA_URLS)
+
+    try:
+        while True:
+
+            for idx, url in enumerate(CAMERA_URLS):
+
+                cap = cameras[idx]
+
+                # reconnect if needed
+                if cap is None or not cap.isOpened():
+                    print(f"[RECONNECT] Camera {idx}")
+                    time.sleep(RECONNECT_DELAY)
+                    cameras[idx] = connect_camera(url)
+                    continue
+
+                ret, frame = cap.read()
+
+                if not ret or frame is None:
+                    # timeout detection
+                    if time.time() - last_frame_time[idx] > FRAME_TIMEOUT:
+                        print(f"[TIMEOUT] Camera {idx} — reconnecting")
+                        cap.release()
+                        cameras[idx] = connect_camera(url)
+                    continue
+
+                last_frame_time[idx] = time.time()
+
+                # detection
+                found = detect_vehicle(frame)
+
+                if found:
+                    print(f"[ALERT] Vehicle detected on Camera {idx}")
+                    save_snapshot(frame, idx)
+
+                # display
+                cv2.imshow(f"Camera {idx}", frame)
+
+            # exit key
+            if cv2.waitKey(1) & 0xFF == 27:
+                break
+
+            time.sleep(0.01)  # small CPU relief
+
+    except KeyboardInterrupt:
+        print("\n[INFO] Stopping...")
+
+    finally:
+        for cap in cameras:
+            if cap:
+                cap.release()
+        cv2.destroyAllWindows()
+
+
+# =========================
+# RUN
+# =========================
+
+if __name__ == "__main__":
+    monitor()
