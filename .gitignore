@@ -3,3 +3,8 @@ __pycache__/
 *.pyc
 recordings/*.avi
 recordings/**/*.avi
+data/flowplayer_probe/*.txt
+data/resolver_reports/*.json
+data/route_pages/*.html
+data/i64_route_page.html
+src/__pycache__/
