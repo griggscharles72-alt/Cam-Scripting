@@ -1,0 +1,23 @@
+STATUS: 200
+URL: https://www.wv511.org/flowplayeri.aspx?CAMID=CAM082
+
+HEADERS:
+Content-Type: text/html; charset=utf-8
+Transfer-Encoding: chunked
+Connection: keep-alive
+Date: Sat, 14 Mar 2026 21:20:47 GMT
+Content-Security-Policy: frame-ancestors 'self'
+Strict-Transport-Security: max-age=86400; includeSubDomains; preload
+Cache-Control: max-age=0, stale-while-revalidate=600, stale-if-error=86400
+Server: Microsoft-IIS/10.0
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+X-Content-Type-Options: nosniff
+X-Frame-Options: SAMEORIGIN
+X-XSS-Protection: 1
+Content-Encoding: gzip
+Vary: accept-encoding
+X-Cache: Miss from cloudfront
+Via: 1.1 cae250e28586d12c16dcc4b462ac538c.cloudfront.net (CloudFront)
+X-Amz-Cf-Pop: PHX52-P1
+X-Amz-Cf-Id: wIXscZiTr1kYlhXhjhLWEMgF7IbGtyASXEeijBS0KUGn4oE6csahMQ==

@@ -1,0 +1,202 @@
+{
+  "cameras": [
+    {
+      "name": "I-64 @ 11 Hal Greer I/C",
+      "route": "I-64",
+      "county": "CAB",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc1.roadsummary.com/rtplive/CAM011/playlist.m3u8",
+      "resolved_camid": "CAM011",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM011"
+    },
+    {
+      "name": "I-64 @ 15 29th St exit (RT 60)",
+      "route": "I-64",
+      "county": "CAB",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc1.roadsummary.com/rtplive/CAM036/playlist.m3u8",
+      "resolved_camid": "CAM036",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM036"
+    },
+    {
+      "name": "I-64 @ 18.6",
+      "route": "I-64",
+      "county": "CAB",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc1.roadsummary.com/rtplive/CAM091/playlist.m3u8",
+      "resolved_camid": "CAM091",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM091"
+    },
+    {
+      "name": "I-64 @ 20 Barboursville I/C",
+      "route": "I-64",
+      "county": "CAB",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc1.roadsummary.com/rtplive/CAM045/playlist.m3u8",
+      "resolved_camid": "CAM045",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM045"
+    },
+    {
+      "name": "I-64 @ 28 Milton I/C",
+      "route": "I-64",
+      "county": "CAB",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc1.roadsummary.com/rtplive/CAM012/playlist.m3u8",
+      "resolved_camid": "CAM012",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM012"
+    },
+    {
+      "name": "I-64 @ 34 Hurricane Exit",
+      "route": "I-64",
+      "county": "PUT",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc3.roadsummary.com/rtplive/CAM071/playlist.m3u8",
+      "resolved_camid": "CAM071",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM071"
+    },
+    {
+      "name": "I-64 @ 39 Teays Valley I/C",
+      "route": "I-64",
+      "county": "PUT",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc3.roadsummary.com/rtplive/CAM015/playlist.m3u8",
+      "resolved_camid": "CAM015",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM015"
+    },
+    {
+      "name": "I-64 @ 43",
+      "route": "I-64",
+      "county": "PUT",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc3.roadsummary.com/rtplive/CAM115/playlist.m3u8",
+      "resolved_camid": "CAM115",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM115"
+    },
+    {
+      "name": "I-64 @ 44 St. Albans",
+      "route": "I-64",
+      "county": "PUT",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc3.roadsummary.com/rtplive/CAM062/playlist.m3u8",
+      "resolved_camid": "CAM062",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM062"
+    },
+    {
+      "name": "I-64 @ 45 Nitro",
+      "route": "I-64",
+      "county": "PUT",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc3.roadsummary.com/rtplive/CAM027/playlist.m3u8",
+      "resolved_camid": "CAM027",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM027"
+    },
+    {
+      "name": "I-64 @ 46",
+      "route": "I-64",
+      "county": "KAN",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc2.roadsummary.com/rtplive/CAM120/playlist.m3u8",
+      "resolved_camid": "CAM120",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM120"
+    },
+    {
+      "name": "I-64 WB @ MM 46.6",
+      "route": "I-64",
+      "county": "KAN",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc2.roadsummary.com/rtplive/CAM136/playlist.m3u8",
+      "resolved_camid": "CAM136",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM136"
+    },
+    {
+      "name": "I-64 @ 47 Crosslanes",
+      "route": "I-64",
+      "county": "KAN",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64&CAM=CAM082",
+      "stream_url": "https://vtc1.roadsummary.com/rtplive/CAM022/playlist.m3u8",
+      "resolved_camid": "CAM022",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM022"
+    },
+    {
+      "name": "I-64 @ 50 Institute",
+      "route": "I-64",
+      "county": "KAN",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc2.roadsummary.com/rtplive/CAM097/playlist.m3u8",
+      "resolved_camid": "CAM097",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM097"
+    },
+    {
+      "name": "I-64 @ 53 Dunbar",
+      "route": "I-64",
+      "county": "KAN",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc1.roadsummary.com/rtplive/CAM009/playlist.m3u8",
+      "resolved_camid": "CAM009",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM009"
+    },
+    {
+      "name": "I-64 @ 55",
+      "route": "I-64",
+      "county": "KAN",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc1.roadsummary.com/rtplive/CAM122/playlist.m3u8",
+      "resolved_camid": "CAM122",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM122"
+    },
+    {
+      "name": "I-64 @ 55.2 Montrose I/C",
+      "route": "I-64",
+      "county": "KAN",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc1.roadsummary.com/rtplive/CAM013/playlist.m3u8",
+      "resolved_camid": "CAM013",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM013"
+    },
+    {
+      "name": "I-64 @ 56.4",
+      "route": "I-64",
+      "county": "KAN",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "",
+      "resolved_camid": "",
+      "resolved_from": ""
+    },
+    {
+      "name": "I-64 @ 58 Oakwood I/C",
+      "route": "I-64",
+      "county": "KAN",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc1.roadsummary.com/rtplive/CAM014/playlist.m3u8",
+      "resolved_camid": "CAM014",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM014"
+    },
+    {
+      "name": "I-64 @ 58.2 Lotto bld 1",
+      "route": "I-64",
+      "county": "KAN",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc1.roadsummary.com/rtplive/CAM038/playlist.m3u8",
+      "resolved_camid": "CAM038",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM038"
+    },
+    {
+      "name": "I-64 @ 58.3 Lotto bld 2",
+      "route": "I-64",
+      "county": "KAN",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc2.roadsummary.com/rtplive/CAM042/playlist.m3u8",
+      "resolved_camid": "CAM042",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM042"
+    },
+    {
+      "name": "I-64 @ 58.5 Bigley I/C",
+      "route": "I-64",
+      "county": "KAN",
+      "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+      "stream_url": "https://vtc2.roadsummary.com/rtplive/CAM089/playlist.m3u8",
+      "resolved_camid": "CAM089",
+      "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM089"
+    }
+  ]
+}

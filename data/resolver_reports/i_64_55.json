@@ -1,0 +1,25 @@
+{
+  "name": "I-64 @ 55",
+  "route": "I-64",
+  "county": "KAN",
+  "page_url": "https://www.wv511.org/CameraListing.aspx?ROUTE=I-64",
+  "matched": true,
+  "matched_title": "I-64: [KAN]I-64 @ 55",
+  "resolved_camid": "CAM122",
+  "resolved_from": "https://www.wv511.org/flowplayeri.aspx?CAMID=CAM122",
+  "stream_url": "https://vtc1.roadsummary.com/rtplive/CAM122/playlist.m3u8",
+  "validated": true,
+  "validation": {
+    "opened": true,
+    "first_frame_ok": true,
+    "shape": [
+      480,
+      720,
+      3
+    ],
+    "fps": 15.0,
+    "width": 720,
+    "height": 480
+  },
+  "notes": []
+}

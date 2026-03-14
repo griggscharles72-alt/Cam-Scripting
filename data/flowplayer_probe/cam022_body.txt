@@ -1,0 +1,328 @@
+
+
+<!DOCTYPE html>
+
+
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head><title>
+	Video Stream - CAM022
+</title>
+	<link type="text/css" href="/css/iplay.min.css?fingerprint=20260112171649" rel="stylesheet" />
+	<style type="text/css">
+		body { 
+			margin: 0px; 
+			padding: 0px; 
+			overflow: hidden; 
+			/*background-color: #000;*/
+			width: 100%;
+			height: 100%;
+		}
+		#media-controls{
+			display:none;
+		}
+		#trafficCamPlayer_20260314220156_8443851,
+		video,
+		#media-player
+		{
+			margin-left: 0px; 
+			margin-top: 0px; 
+			width:100%;
+			height: 100%;
+			position: absolute;
+		}
+		button { background:transparent url('/css/img/play_352.png') no-repeat 0 0; width: 100%; height: 100%; }
+		@media all and (min-width:600px){
+			#trafficCamPlayer_20260314220156_8443851,
+			video,
+			#media-player
+			{
+				/*min-width: 352px;
+				min-height: 240px;*/
+			}
+		}
+		@media all and (min-width:200px) and (max-width:320px){
+			/*
+			#trafficCamPlayer_20260314220156_8443851, video, #media-player, body, #media-controls, button { 
+				width: 320px; 
+				height: 240px;
+			}
+			*/
+			button { background:transparent url('/css/img/play_320.png') no-repeat 0 0; }
+		}
+		@media all and (min-width:181px) and (max-width:200px){
+			/*
+			#trafficCamPlayer_20260314220156_8443851, video, #media-player, body, #media-controls, button { 
+				width: 200px; 
+				height: 160px;
+			}
+			*/
+			button { background:transparent url('/css/img/play_200.png') no-repeat 0 0; }
+		}
+		@media all and (max-width:180px){
+			/*
+			#trafficCamPlayer_20260314220156_8443851, video, #media-player, body, #media-controls, button { 
+				width: 180px; 
+				height: 140px;
+				width: 100%; 
+				height: 100%; 
+			}
+			*/
+			button { background:transparent url('/css/img/play_180.png') no-repeat 0 0; }
+		}
+		.cam-notes {
+			background-color: #082064;
+			display: inline-block;
+			display: none;
+			font-size: 11px;
+			padding: 3px 4px;
+			cursor: pointer;
+			border-radius: 1px;
+			position: absolute;
+			color: #eecf08;
+			left: 0;
+			bottom: 0;
+		}
+		.cam-full-screen-btn-panel{
+			right: unset !important;
+		}
+		.trafficCamPlayer-panel {
+			width: 100% !important;
+		}
+      .error-overlay {
+        position: absolute;
+        top:0; left:0; width:100%; height:100%;
+        background: rgba(0,0,0,0.75);
+        color: #f44;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        font-weight: bold;
+        font-size: 18px;
+        z-index: 10;
+        text-align: center;
+      }
+      .error-overlay button {
+        margin-top: 12px;
+        padding: 6px 12px;
+        font-size: 16px;
+        cursor: pointer;
+      }
+
+	</style>
+	<!-- <script type="text/javascript" src="js/jquery/jquery-1.12.4.min.js"></script> -->
+	<script type="text/javascript" src="/js/jquery/jquery-3.6.0.min.js"></script>
+	<script type="text/javascript" src="/js/iframe_handler.min.js?fingerprint=20230829132522"></script>
+	<!-- <script type="text/javascript" src="/js/jquery/jquery-migrate-3.4.0.min.js"></script> -->
+    <!-- <scr ipt type="text/javascript" src="/js/hls.light.min.js?fingerprint=20220707141946"></scr ipt> -->
+	<script type="text/javascript" src="/js/hls/1.6.10/hls.min.js?fingerprint=20250814184427"></script>
+	<!-- <script type="text/javascript" src="/js/iplay.min.js?fingerprint=20221102185221"></script>-->
+    <script type="text/javascript" src="/js/save.min.js?fingerprint=20260203072017"></script>
+    <script type="text/javascript">
+		$(function () {
+			if (Hls.isSupported()) {
+				console.log('Video Format Detected: HLS');
+				$("#trafficCamPlayer_20260314220156_8443851").html("");
+				$("#trafficCamPlayer_20260314220156_8443851").hide();
+				const video = document.getElementById('media-video');
+				//var hls = new Hls();
+				const MAX_RETRIES = 10;
+				const BASE_RETRY_DELAY = 1000;   // 1s
+				const MAX_RETRY_DELAY = 15000;   // 15s
+				let retryCount = 0;
+				let retryTimer = null;
+				//const hls = new Hls({
+				//	debug: customHlsLogger
+				//});
+				const hls = new Hls({
+					maxRetry: 10,
+					manifestLoadingMaxRetry: 10,
+					manifestLoadingRetryDelay: 2000,
+					manifestLoadingMaxRetryTimeout: 30000,
+					levelLoadingMaxRetry: 10,
+					levelLoadingRetryDelay: 2000,
+					levelLoadingMaxRetryTimeout: 30000,
+					// Increase the maximum number of network errors allowed before the player stops trying
+					maxNetworkErrors: 10, // Example: setting it to 10
+					// Or specifically for fragment (segment) loading retries:
+					fragLoadingMaxRetry: 10, // Example: setting to 10 attempts
+					// You might also need to adjust the timeout duration if the network requests are slow
+					fragLoadingTimeOut: 20000, // Example: 20 seconds timeout per attempt
+				});
+				function getRetryDelay(count) {
+				  return Math.min(BASE_RETRY_DELAY * Math.pow(2, count), MAX_RETRY_DELAY);
+				}
+				function scheduleRetry(reason) {
+				  if (retryCount >= MAX_RETRIES) {
+					console.error('Max retries reached. Destroying HLS instance.', reason);
+					hls.destroy();
+					showError('Unable to play video');
+					return;
+				  }
+				  const delay = getRetryDelay(retryCount);
+				  retryCount++;
+				  console.warn(
+					`HLS fatal error. Retry ${retryCount}/${MAX_RETRIES} in ${delay}ms`,
+					reason
+				  );
+				  hls.stopLoad();
+				  clearTimeout(retryTimer);
+				  retryTimer = setTimeout(() => {
+					hls.loadSource('https://vtc1.roadsummary.com/rtplive/CAM022/playlist.m3u8'); // reload URL to avoid cached bad responses
+					hls.startLoad();
+				  }, delay);
+				}
+				function showError(msg) {
+					clearError();
+					const overlay = document.createElement("div");
+					overlay.className = "error-overlay";
+					overlay.textContent = msg;
+					video.parentElement.appendChild(overlay);
+				}
+				function clearError() {
+					const overlay = video.parentElement.querySelector(".error-overlay");
+					if (overlay) overlay.remove();
+				}
+
+				hls.on(Hls.Events.ERROR, (event, data) => {
+				  if (!data.fatal) {
+					console.log('[ERROR]', data);
+					return; // hls.js will handle non-fatal errors
+				  }
+				  switch (data.type) {
+					case Hls.ErrorTypes.MEDIA_ERROR:
+					  console.warn('Fatal media error, attempting recovery…');
+					  hls.recoverMediaError();
+					  // If media recovery keeps failing, escalate to full retry
+					  setTimeout(() => {
+						if (retryCount === 0) {
+						  // media recovery succeeded
+						  return;
+						}
+						scheduleRetry(data);
+					  }, 1000);
+					  break;
+					case Hls.ErrorTypes.NETWORK_ERROR:
+					case Hls.ErrorTypes.OTHER_ERROR:
+					default:
+					  scheduleRetry(data);
+					  break;
+				  }
+				});
+				hls.on(Hls.Events.MANIFEST_LOADED, () => { retryCount = 0; clearError(); });
+				hls.on(Hls.Events.LEVEL_LOADED, () => { retryCount = 0; clearError(); });
+				hls.on(Hls.Events.FRAG_LOADED, () => { retryCount = 0; clearError(); });
+				hls.on(Hls.Events.MANIFEST_PARSED, function () {
+					video.play();
+				});
+
+				hls.loadSource('https://vtc1.roadsummary.com/rtplive/CAM022/playlist.m3u8');
+				hls.attachMedia(video);
+				//hls.on(Hls.Events.ERROR, function (event, data) {
+				//	console.log('[ERROR]', data);
+                //});
+			} else {
+				console.log('Video Format Detected: HTML5');
+				$("#trafficCamPlayer_20260314220156_8443851").html("");
+				$("#trafficCamPlayer_20260314220156_8443851").hide();
+				$("#media-player").show();
+				var video = document.getElementById('media-video');
+				video.play();
+			}
+		});
+		/*const customHlsLogger = {
+		  log:   (...args) => console.log('[LOG]', ...args),
+		  warn:  (...args) => console.warn('[WARN]', ...args),
+		  info:  (...args) => console.info('[INFO]', ...args),
+		  error: (...args) => console.error('[ERROR]', ...args)
+		};*/
+	  </script>
+</head>
+	<body marginwidth="0" marginheight="0" leftmargin="0" rightmargin="0" topmargin="0" bottommargin="0">
+		<div id="trafficCamPlayer_20260314220156_8443851"></div>
+		<div id="media-player">
+			<video id="media-video" autoplay="true" muted playsinline preload="metadata">
+				<source type="application/x-mpegurl"	src="https://vtc1.roadsummary.com/rtplive/CAM022/playlist.m3u8" />
+			</video>
+			<div id="media-controls">
+				<button id="play-pause-button" class="play" title="play" onclick="togglePlayPause();">Play</button>
+			</div>
+			<div id="dvCamNotes" class="cam-notes"></div>
+			<div onclick="fullScreenCam()" class="cam-full-screen-btn" id="fullScreenBtn"> full screen </div>
+		</div>	
+	</body>
+	
+	//------full screen----------
+	<script type="text/javascript">
+        var browserName = "";
+        detectBrowser();
+        hideFullScreenBtn();
+
+        //console.log('parent.myCamAutoPlayIsFullScreen: ' + parent.myCamAutoPlayIsFullScreen);
+        //if (parent.myCamAutoPlayIsFullScreen == 1) {
+        //	try {
+        //		fullScreenCam(); // Failed to execute 'requestFullscreen' on 'Element': API can only be initiated by a user gesture.
+        //	} catch (err) { console.error(err) }
+        //}
+
+        function hideFullScreenBtn() {
+            if (browserName == "Safari") {
+                //const fsBtn = document.getElementById("fullScreenBtn");
+                //fsBtn.classList.add("hide");
+            }
+        }
+        function fullScreenCam() {
+            try { parent.myCamAutoPlayIsFullScreen = 1; } catch (err) { }
+            let elem = document.getElementById('media-video');
+            if (elem.requestFullscreen) {
+                elem.requestFullscreen();
+            } else if (elem.mozRequestFullScreen) {
+                elem.mozRequestFullScreen();
+            } else if (elem.webkitRequestFullscreen) {
+                elem.webkitRequestFullscreen();
+            } else if (elem.msRequestFullscreen) {
+                elem.msRequestFullscreen();
+            } else if (elem.webkitEnterFullscreen) {
+                elem.webkitEnterFullscreen();
+            }
+        }
+        function exitFullScreenCam() {
+            let elem = document.getElementById('media-video');
+            if (elem.exitFullScreen) {
+                elem.exitFullScreen();
+            } else if (elem.mozExitFullScreen) {
+                elem.mozExitFullScreen();
+            } else if (elem.webkitExitFullScreen) {
+                elem.webkitExitFullScreen();
+            } else if (elem.msExitFullScreen) {
+                elem.msExitFullScreen();
+            } else if (elem.oExitFullScreen) {
+                elem.oExitFullScreen();
+            } else {
+                elem.remove();
+            }
+        }
+        function detectBrowser() {
+            let userAgent = navigator.userAgent;
+
+            if (userAgent.match(/chrome|chromium|crios/i)) {
+                browserName = "Chrome";
+            } else if (userAgent.match(/firefox|fxios/i)) {
+                browserName = "Firefox";
+            } else if (userAgent.match(/safari/i)) {
+                browserName = "Safari";
+            } else if (userAgent.match(/opr\//i)) {
+                browserName = "Opera";
+            } else if (userAgent.match(/edg/i)) {
+                browserName = "Edge";
+            } else if (userAgent.match(/android/i)) {
+                browserName = "Android";
+            } else if (userAgent.match(/iphone/i)) {
+                browserName = "iPhone";
+            } else {
+                browserName = "Unknown";
+            }
+        }
+    </script>
+</html>
