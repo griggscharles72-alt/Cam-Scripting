@@ -1,98 +1,123 @@
-"""
-Traffic recorder entry point.
-
-Behavior:
-- If stream_url exists -> try to record it.
-- Else if page_url exists -> report unresolved source cleanly.
-- Else -> skip.
-
-This keeps the system deterministic while WV511 media endpoint resolution
-is still being built.
-"""
+#!/usr/bin/env python3
+# =============================================================================
+# FILE: src/main.py
+# PROJECT: traffic_recorder_project
+# PURPOSE:
+#   Launch all configured camera recorders against the current local
+#   CameraRecorder API shape.
+# =============================================================================
 
 import argparse
-import json
-import os
+import inspect
+import sys
 import threading
-from typing import Any, Dict, List
+from pathlib import Path
 
-from .camera_recorder import CameraRecorder
-
-
-def load_cameras(config_path: str) -> List[Dict[str, Any]]:
-    with open(config_path, "r", encoding="utf-8") as f:
-        config = json.load(f)
-    cameras = config.get("cameras", [])
-    if not isinstance(cameras, list):
-        raise ValueError("Invalid cameras configuration: expected a list")
-    return cameras
+from src.camera_recorder import CameraRecorder
+from src.source_resolver import load_cameras
 
 
-def record_camera(camera: Dict[str, Any], duration: int, output_dir: str) -> None:
-    name = camera.get("name", "unknown")
-    stream_url = (camera.get("stream_url") or "").strip()
-    page_url = (camera.get("page_url") or "").strip()
-
-    if stream_url:
-        recorder = CameraRecorder(name, stream_url, output_dir)
-        recorder.record(duration)
-        return
-
-    if page_url:
-        print(f"[UNRESOLVED] {name}: page_url present but stream_url not yet resolved -> {page_url}")
-        return
-
-    print(f"[SKIP] {name}: no stream_url or page_url defined")
+def build_arg_parser():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--duration", type=int, default=60, help="Recording duration in seconds")
+    return parser
 
 
-def main() -> None:
-    parser = argparse.ArgumentParser(description="Record live traffic cameras")
-    parser.add_argument(
-        "--config",
-        default=os.path.join(os.path.dirname(__file__), "..", "config", "cameras.json"),
-        help="Path to JSON camera configuration file",
-    )
-    parser.add_argument(
-        "--duration",
-        type=int,
-        default=3600,
-        help="Recording duration in seconds (default: 3600)",
-    )
-    parser.add_argument(
-        "--output",
-        default=os.path.join(os.path.dirname(__file__), "..", "recordings"),
-        help="Directory to store recordings",
+def build_recorder(camera: dict) -> CameraRecorder:
+    output_dir = str(Path("recordings").resolve())
+    return CameraRecorder(
+        name=camera["name"],
+        stream_url=camera["stream_url"],
+        output_dir=output_dir,
+        fps=camera.get("fps"),
     )
 
+
+def build_runner(recorder: CameraRecorder, duration: int):
+    candidate_names = [
+        "run",
+        "record",
+        "start",
+        "capture",
+        "record_stream",
+        "start_recording",
+    ]
+
+    selected = None
+    for name in candidate_names:
+        fn = getattr(recorder, name, None)
+        if callable(fn):
+            selected = fn
+            break
+
+    if selected is None:
+        public_callables = []
+        for name in dir(recorder):
+            if name.startswith("_"):
+                continue
+            value = getattr(recorder, name, None)
+            if callable(value):
+                public_callables.append(name)
+        raise RuntimeError(
+            "No supported recorder worker method found. "
+            f"Available public callables: {public_callables}"
+        )
+
+    sig = inspect.signature(selected)
+    params = set(sig.parameters.keys())
+
+    kwargs = {}
+    if "duration" in params:
+        kwargs["duration"] = duration
+    elif "duration_seconds" in params:
+        kwargs["duration_seconds"] = duration
+    elif "seconds" in params:
+        kwargs["seconds"] = duration
+
+    def runner():
+        return selected(**kwargs)
+
+    return runner, selected.__name__, str(sig)
+
+
+def main():
+    parser = build_arg_parser()
     args = parser.parse_args()
 
-    output_dir = os.path.abspath(args.output)
-    os.makedirs(output_dir, exist_ok=True)
+    cameras = load_cameras()
+    print(f"Starting recording for {len(cameras)} cameras. Duration: {args.duration} seconds.")
 
-    cameras = load_cameras(args.config)
-    if not cameras:
-        print("No cameras defined in configuration.")
-        return
+    threads = []
 
-    threads: List[threading.Thread] = []
-    for camera in cameras:
-        t = threading.Thread(
-            target=record_camera,
-            args=(camera, args.duration, output_dir),
-            daemon=True,
-            name=camera.get("name", "camera_thread"),
-        )
+    for cam in cameras:
+        stream_url = (cam.get("stream_url") or "").strip()
+        if not stream_url:
+            print(f"[UNRESOLVED] {cam['name']}: page_url present but stream_url not yet resolved -> {cam.get('page_url', '')}")
+            continue
+
+        recorder = build_recorder(cam)
+        runner, method_name, method_sig = build_runner(recorder, args.duration)
+
+        print(f"[MAIN] {cam['name']} -> {method_name}{method_sig}")
+
+        t = threading.Thread(target=runner, daemon=False, name=f"rec-{cam['name']}")
+        t.start()
         threads.append(t)
 
-    print(f"Starting recording for {len(threads)} cameras. Duration: {args.duration} seconds.")
-    for t in threads:
-        t.start()
-
-    for t in threads:
-        t.join()
+    try:
+        for t in threads:
+            t.join()
+    except KeyboardInterrupt:
+        print("\n[MAIN] Stop requested by user. Exiting main thread.")
+        raise
 
     print("All recordings completed.")
 
 
 if __name__ == "__main__":
-    main()
+    try:
+        main()
+        sys.exit(0)
+    except KeyboardInterrupt:
+        print("[MAIN] Exited by user.")
+        sys.exit(130)
