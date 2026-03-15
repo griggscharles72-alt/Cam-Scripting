@@ -101,8 +101,10 @@ def flowplayer_url(camid: str) -> str:
 def normalize_title_for_match(s: str) -> str:
     s = s.strip()
     s = re.sub(r"^\s*I-64:\s*\[[A-Z]+\]", "", s, flags=re.I)
-    s = re.sub(r"\s+", " ", s)
+    s = re.sub(r"^\s*I-64\s*", "", s, flags=re.I)
+    s = re.sub(r"\bMM\s+", "@ ", s, flags=re.I)
     s = s.replace("exit(", "exit (")
+    s = re.sub(r"\s+", " ", s)
     return s.strip().lower()
 
 
